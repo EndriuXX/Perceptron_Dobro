@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.10.0"></script>
+    <script src="model.js"></script>
+</head>
+<body>
+    <h1>Previsão do Modelo Perceptron</h1>
+    <input id="inputValue" type="text" />
+    <button onclick="predict()">Prever</button>
+    <p id="prediction"></p>
+
+    <script>
+        let model;
+        async function loadModel() {
+            const modelJson = await fetch('model.json');
+            const modelConverted = await modelJson.text();
+            const tfModel = await tf.loadLayersModel(modelConverted);
+            model = tfModel;
+        }
+        loadModel();
+
+        function predict() {
+            const inputValue = document.getElementById('inputValue').value;
+            const prediction = model.predict(tf.tensor2d([parseFloat(inputValue)], [1, 1])).dataSync();
+            document.getElementById('prediction').innerText = `Previsão: ${prediction}`;
+        }
+    </script>
+</body>
+</html>
